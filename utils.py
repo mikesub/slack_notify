@@ -13,7 +13,7 @@ def make_request(method, url, **kwargs):
 
 
 def send_to_slack(*args):
-    message = ''.join([arg for arg in args if arg])
+    message = '\n'.join([arg for arg in args if arg])
     if message:
         if config.DEBUG:
             print('---\n' + message)
