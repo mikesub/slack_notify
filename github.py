@@ -51,5 +51,4 @@ def get_prs():
     result = list(result)
     if not result:
         return None
-    result = 'Pending PRs:\n' + '\n'.join([string_template(x) for x in result])
-    return result
+    return 'Pending PRs:\n' + '\n'.join([string_template(x) for x in result])

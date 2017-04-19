@@ -21,7 +21,9 @@ def string_template(item):
 
 
 def get():
-    response = utils.make_request('POST', '{}/rest/api/2/search'.format(config.jira_url),
+    response = utils.make_request(
+        'POST',
+        '{}/rest/api/2/search'.format(config.jira_url),
         auth=(config.jira_login, config.jira_password),
         json={
             "jql": config.jira_jql,
