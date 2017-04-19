@@ -25,15 +25,10 @@ def strip_data(search_result_item):
     }
 
 
-def add_reviews(pull_request):
-    reviews = get(pull_request['url'] + '/reviews')
-    requested = get(pull_request['url'] + '/requested_reviewers')
-    users = {(item['user']['login'], item['state']) for item in reviews}
-    users = users | {(reviewer['login'], 'REQUESTED') for reviewer in requested}
-    item = {
-        'participants': {user[0] for user in users} - {pull_request['author']},
-        'is_approved': 'APPROVED' in (user[1] for user in users),
-    }
+def add_participants(pull_request):
+    reviewers = {item['user']['login'] for item in get(pull_request['url'] + '/reviews')}
+    requested_reviewers = {reviewer['login'] for reviewer in get(pull_request['url'] + '/requested_reviewers')}
+    item = {'participants': reviewers | requested_reviewers - {pull_request['author']}}
     item.update(pull_request)
     return item
 
@@ -42,7 +37,7 @@ def string_template(item):
     return '{task} {url} @{author} > {reviewers}'.format(
         task=item['task'],
         url=item['html_url'],
-        author=item['author'].lower(),
+        author=config.gh_slack_mapping.get(item['author'], item['author']).lower(),
         reviewers=' '.join(
             '@{}'.format(config.gh_slack_mapping.get(username, username)).lower() for username in item['participants']
         ) or '*nobody*'
@@ -52,8 +47,7 @@ def string_template(item):
 def get_prs():
     result = get(config.gh_search_url)['items']
     result = (strip_data(x) for x in result)
-    result = (add_reviews(x) for x in result)
-    result = (x for x in result if not x['is_approved'])
+    result = (add_participants(x) for x in result)
     result = list(result)
     if not result:
         return None
