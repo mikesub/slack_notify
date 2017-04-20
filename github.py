@@ -28,7 +28,7 @@ def strip_data(search_result_item):
 def add_participants(pull_request):
     reviewers = {item['user']['login'] for item in get(pull_request['url'] + '/reviews')}
     requested_reviewers = {reviewer['login'] for reviewer in get(pull_request['url'] + '/requested_reviewers')}
-    item = {'participants': reviewers | requested_reviewers - {pull_request['author']}}
+    item = {'participants': (reviewers | requested_reviewers) - {pull_request['author']}}
     item.update(pull_request)
     return item
 
