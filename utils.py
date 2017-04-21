@@ -34,6 +34,6 @@ def handle_error(error):
     requests.post(config.slack_webhook_url, json={
         'text': text,
         'channel': config.slack_debug_channel,
-        'username': 'pull requests alert',
+        'username': 'watchmen',
         'icon_emoji': ':octopus:',
     })
