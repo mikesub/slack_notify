@@ -12,12 +12,11 @@ def make_request(method, url, **kwargs):
     return response.json()
 
 
-def send_to_slack(*args):
+def send_to_slack(*args, debug_mode=False):
     message = '\n'.join([arg for arg in args if arg])
     if message:
-        if config.DEBUG:
-            print('---\n' + message)
-            return
+        if debug_mode:
+            return print('---\n{}'.format(message))
         requests.post(config.slack_webhook_url, json={
             'text': message,
             'username': 'pull requests alert',
@@ -26,11 +25,10 @@ def send_to_slack(*args):
         }).raise_for_status()
 
 
-def handle_error(error):
+def handle_error(error, debug_mode=False):
     text = '\n'.join(str(x) for x in [type(error), error])
-    if config.DEBUG:
-        print(text)
-        return
+    if debug_mode:
+        return print(text)
     requests.post(config.slack_webhook_url, json={
         'text': text,
         'channel': config.slack_debug_channel,

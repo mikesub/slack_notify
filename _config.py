@@ -1,5 +1,3 @@
-DEBUG = True
-
 gh_token = ''
 gh_user_agent = ''
 gh_search_url = 'https://api.github.com/search/issues?q=type:pr+is:open+user:ORGANIZATION'
