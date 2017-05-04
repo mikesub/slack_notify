@@ -1,6 +1,7 @@
 import utils
 import config
 import datetime
+from operator import itemgetter
 
 def strip_issue(issue):
     return {
@@ -40,5 +41,5 @@ def get_issues():
     if not result:
         return None
     result = (strip_issue(x) for x in result)
-    result = '*Stuck issues*\n' + '\n'.join([string_template(x) for x in result])
+    result = '*Stuck issues*\n' + '\n'.join([string_template(x) for x in sorted(result, key=itemgetter('status'))])
     return result
