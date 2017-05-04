@@ -1,6 +1,7 @@
 import re
 import config
 import utils
+from operator import itemgetter
 
 
 def get(url):
@@ -48,7 +49,7 @@ def get_prs():
     result = get(config.gh_search_url)['items']
     result = (strip_data(x) for x in result)
     result = (add_participants(x) for x in result)
-    result = list(result)
+    result = sorted(result, key=itemgetter('task'))
     if not result:
         return None
     return '\n*Pending review*\n' + '\n'.join([string_template(x) for x in result])
