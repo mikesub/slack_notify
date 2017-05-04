@@ -1,6 +1,6 @@
 import utils
 import config
-
+import datetime
 
 def strip_issue(issue):
     return {
@@ -34,6 +34,8 @@ def get():
 
 
 def get_issues():
+    if datetime.datetime.today().weekday() == 0:
+        return None
     result = get()['issues']
     if not result:
         return None
